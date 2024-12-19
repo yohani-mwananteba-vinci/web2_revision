@@ -1,30 +1,88 @@
+@baseUrl = http://localhost:3000
 
 ### Read all films
-GET http://localhost:3000/films 
-
-### Read all films with File variable
-@baseUrl = http://localhost:3000
 GET {{baseUrl}}/films
 
-### Read all films with a minimum duration of 120 min
-GET {{baseUrl}}/films/?minimum-duration=120
+### Read all films with minimum-duration of 130min
+GET {{baseUrl}}/films/?minimum-duration=130
 
-### Read a single film
+### Try to read films with wrong minimum-duration
+GET {{baseUrl}}/films/?minimum-duration=0
+
+### Read film with ID == 1
 GET {{baseUrl}}/films/1
 
+### Read film which does not exist
+GET {{baseUrl}}/films/500
+
 ### Create a film
-POST {{baseUrl}}/films
+POST {{baseUrl}}/films/
 Content-Type: application/json
 
 {
-    "title": "Lion King",
-    "director": "Roger Allers",
-    "duration": 88,
-    "imageUrl":
-      "https://upload.wikimedia.org/wikipedia/en/3/3d/The_Lion_King_poster.jpg",
-    "description":
-      "A lion cub named Simba, exiled after being blamed for his father's death, returns with the help of a meerkat and a warthog to reclaim his rightful place as king."}
+    "title":"Star Wars: The Phantom Menace (Episode I)",
+    "duration": 136,
+    "director": "George Lucas",
+    "budget": 115,
+    "imageUrl":"https://upload.wikimedia.org/wikipedia/en/4/40/Star_Wars_Phantom_Menace_poster.jpg"
+}
 
-# !!! Don't forget to remove "," from the last property !!!
+### Try to create a film with a parameter missing
+POST {{baseUrl}}/films/
+Content-Type: application/json
 
-# C: You forgot to add other test cases (Check create a film with a wrong budget, Read film which does not exist ...).
+{
+    "title":" ",
+    "duration": 136,
+    "budget": 115,
+    "imageUrl":"https://upload.wikimedia.org/wikipedia/en/4/40/Star_Wars_Phantom_Menace_poster.jpg"
+}
+
+### Try to create a film with an empty string or string with whitespaces only
+POST {{baseUrl}}/films/
+Content-Type: application/json
+
+{
+    "title":" ",
+    "duration": 136,
+    "director": "George Lucas",
+    "budget": 115,
+    "imageUrl":"https://upload.wikimedia.org/wikipedia/en/4/40/Star_Wars_Phantom_Menace_poster.jpg"
+}
+
+### Try to create a film with a wrong budget (string instead of number)
+POST {{baseUrl}}/films/
+Content-Type: application/json
+
+{
+    "title":"Star Wars: The Phantom Menace (Episode I)",
+    "duration": 136,
+    "director": "George Lucas",
+    "budget": "115",
+    "imageUrl":"https://upload.wikimedia.org/wikipedia/en/4/40/Star_Wars_Phantom_Menace_poster.jpg"
+}
+
+### Try to create a film with an unexpected parameter
+POST {{baseUrl}}/films/
+Content-Type: application/json
+
+{
+    "title":"Star Wars: The Phantom Menace (Episode I)",
+    "duration": 136,
+    "director": "George Lucas",
+    "budget": 115,
+    "imageUrl":"https://upload.wikimedia.org/wikipedia/en/4/40/Star_Wars_Phantom_Menace_poster.jpg",
+    "unexpected": "unexpected"
+}
+
+### Try to create a movie who already exists (Same title & director)
+POST {{baseUrl}}/films/
+Content-Type: application/json
+
+{
+    "title":"Star Wars: The Phantom Menace (Episode I)",
+    "duration": 136,
+    "director": "George Lucas",
+    "budget": 115,
+    "imageUrl":"https://upload.wikimedia.org/wikipedia/en/4/40/Star_Wars_Phantom_Menace_poster.jpg"
+}

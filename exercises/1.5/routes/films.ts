@@ -1,8 +1,6 @@
 import { Router } from "express";
 
-import { Film } from "../types";
-
-import { NewFilm } from "../types";
+import { Film, NewFilm } from "../types";
 
 const router = Router();
 
@@ -63,40 +61,43 @@ const films: Film[] = [
   },
 ];
 
-//READ ALL FILTERED : Read all the resources in the collection according to the given filter
+// Read all films, filtered by minimum-duration if the query param exists
+// TODO
 router.get("/", (req, res) => {
-  if (!req.query["minimum-duration"]) {
-    // Cannot call req.query.minimum-duration as "-" is an operator
-    return res.json(films);
+  if (req.query["minimum-duration"] === undefined) {
+    return res.send(films);
   }
 
-  //C: We should have a condition to check if durationMin !isNan || > 0
-  const durationMin = Number(req.query["minimum-duration"]);
+  const minDuration = Number(req.query["minimum-duration"]);
 
-  const filteredFilms = films.filter((film) => {
-    return film.duration >= durationMin;
-  });
+  if (isNaN(minDuration) || minDuration <= 0) {
+    res.sendStatus(400);  //Improved
+  }
 
-  //C: Res.send more appropriate here as we are sending an array of films
-  return res.json(filteredFilms);
+  const filteredFilms = films.filter((film) => film.duration >= minDuration);
+
+  return res.send(filteredFilms);
 });
 
-// READ ONE : Read the identified resource
+// Read a film by id
 router.get("/:id", (req, res) => {
   const id = Number(req.params.id);
 
-  const film = films.find((film) => film.id === id);
-
-  if (!film) {
-    return res.sendStatus(404); //C: Should use res.json() (But it's the good way to do it)
+  if (isNaN(id)) {
+    return res.sendStatus(400); //Improves
   }
 
-  return res.json(film);
+  const film = films.find((film) => film.id === id);
+
+  if (film === undefined) {
+    return res.sendStatus(404); //Improved
+  }
+
+  return res.send(film);
 });
 
-// CREATE ONE : Create a resource based on query data
+// Create a new film
 router.post("/", (req, res) => {
-  console.log(req.body); // Log the request body for debugging
   const body: unknown = req.body;
 
   if (
@@ -110,53 +111,45 @@ router.post("/", (req, res) => {
     typeof body.duration !== "number" ||
     !body.title.trim() ||
     !body.director.trim() ||
-    body.duration <= 0
-    // No need to check (here) the type, the conditions or if they are in the body for the optional properties
-    /* C: Wrong, we could check all the conditions here:
-      ("budget" in body && (typeof body.budget !== "number" || body.budget <= 0)) ||
-      ("description" in body && (typeof body.description !== "string" || !body.description.trim())) ||
-      ("imageUrl" in body && (typeof body.imageUrl !== "string" || !body.imageUrl.trim()))
-    */
+    body.duration <= 0 ||
+    ("budget" in body &&
+      (typeof body.budget !== "number" || body.budget <= 0)) ||
+    ("description" in body &&
+      (typeof body.description !== "string" || !body.description.trim())) ||
+    ("imageUrl" in body &&
+      (typeof body.imageUrl !== "string" || !body.imageUrl.trim()))
   ) {
-    return res.json("Wrong minimum duration");
+    return res.sendStatus(400); // improved
   }
 
-  //C: Their is a more simple way to add a film (see below)
-  const { title, director, duration, imageUrl, description, budget } =
-    body as NewFilm;
-  // Partial<NewFilm> cannot be used here because some properties are required
+  const expectedKeys = [
+    "title",
+    "director",
+    "duration",
+    "budget",
+    "description",
+    "imageUrl",
+  ];
+  const bodyKeys = Object.keys(body);
+  const extraKeys = bodyKeys.filter((key) => !expectedKeys.includes(key));
+  if (extraKeys.length > 0) {
+    return res.json("Extra keys in body: " + extraKeys.join(", "));
+  }
 
-  const nextId =
-    films.reduce(
-      (maxId, film) => (film.id > maxId ? film.id : maxId),
-      0
-    ) + 1;
-
-  const newFilm: Film = {
-    id: nextId,
-    title,
-    director,
-    duration,
-    //All the optional properties must be checked HERE before assigning them
-    //C: They could be checked before (see the 1st if statement)
-    imageUrl: imageUrl?.trim() || undefined,
-    description: description?.trim() || undefined,
-    budget: budget && budget > 0 ? budget : undefined,
-  };
-
-  /*More simple way to add a film: 
-    const newFilm = body as NewFilm;
+  const newFilm = body as NewFilm;
 
   const nextId =
     films.reduce((acc, film) => (film.id > acc ? film.id : acc), 0) + 1;
 
   const addedFilm: Film = { id: nextId, ...newFilm };
-  */
 
+  // addedFilm must have an unique title - director 
+  if (films.find((film) => film.title === addedFilm.title && film.director == addedFilm.director ))
+    return res.sendStatus(409);
 
-  films.push(newFilm);
-  
-  return res.json(newFilm);
+  films.push(addedFilm);
+
+  return res.json(addedFilm);
 });
 
 export default router;
