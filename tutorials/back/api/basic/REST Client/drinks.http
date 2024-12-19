@@ -3,7 +3,7 @@
 GET {{baseUrl}}/drinks
 
 ### Read a single drink
-GET {{baseUrl}}/drinks/7
+GET {{baseUrl}}/drinks/1
 
 ### Read all drinks cheaper or equal to 3 €
 GET {{baseUrl}}/drinks/?budget-max=3
@@ -28,3 +28,15 @@ Content-Type: application/json
     "volume":0.25,
     "price":4.5    
 }
+
+### Delete a drink
+DELETE {{baseUrl}}/drinks/2
+
+### Update the drink identified by 5
+PATCH {{baseUrl}}/drinks/5
+Content-Type: application/json
+
+{
+    "title":"Citronnade"
+}
+
