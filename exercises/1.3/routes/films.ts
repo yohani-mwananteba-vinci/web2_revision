@@ -6,7 +6,7 @@ import { NewFilm } from "../types";
 
 const router = Router();
 
-const defaultFilms: Film[] = [
+const films: Film[] = [
   {
     id: 1,
     title: "Shang-Chi and the Legend of the Ten Rings",
@@ -67,22 +67,30 @@ const defaultFilms: Film[] = [
 router.get("/", (req, res) => {
   if (!req.query["minimum-duration"]) {
     // Cannot call req.query.minimum-duration as "-" is an operator
-    return res.json(defaultFilms);
+    return res.json(films);
   }
+
+  //C: We should have a condition to check if durationMin !isNan || > 0
   const durationMin = Number(req.query["minimum-duration"]);
-  const filteredFilms = defaultFilms.filter((film) => {
+
+  const filteredFilms = films.filter((film) => {
     return film.duration >= durationMin;
   });
+
+  //C: Res.send more appropriate here as we are sending an array of films
   return res.json(filteredFilms);
 });
 
 // READ ONE : Read the identified resource
 router.get("/:id", (req, res) => {
   const id = Number(req.params.id);
-  const film = defaultFilms.find((film) => film.id === id);
+
+  const film = films.find((film) => film.id === id);
+
   if (!film) {
-    return res.sendStatus(404);
+    return res.sendStatus(404); //C: Should use res.json() (But it's the good way to do it)
   }
+
   return res.json(film);
 });
 
@@ -90,31 +98,36 @@ router.get("/:id", (req, res) => {
 router.post("/", (req, res) => {
   console.log(req.body); // Log the request body for debugging
   const body: unknown = req.body;
+
   if (
     !body ||
     typeof body !== "object" ||
     !("title" in body) ||
     !("director" in body) ||
     !("duration" in body) ||
-    // No need to check if the optional properties are in the body
     typeof body.title !== "string" ||
     typeof body.director !== "string" ||
     typeof body.duration !== "number" ||
-    // No need to check the types of the optional properties
     !body.title.trim() ||
     !body.director.trim() ||
     body.duration <= 0
-    // No need to check (here) the conditions for the optional properties
+    // No need to check (here) the type, the conditions or if they are in the body for the optional properties
+    /* C: Wrong, we could check all the conditions here:
+      ("budget" in body && (typeof body.budget !== "number" || body.budget <= 0)) ||
+      ("description" in body && (typeof body.description !== "string" || !body.description.trim())) ||
+      ("imageUrl" in body && (typeof body.imageUrl !== "string" || !body.imageUrl.trim()))
+    */
   ) {
     return res.json("Wrong minimum duration");
   }
 
+  //C: Their is a more simple way to add a film (see below)
   const { title, director, duration, imageUrl, description, budget } =
     body as NewFilm;
   // Partial<NewFilm> cannot be used here because some properties are required
 
   const nextId =
-    defaultFilms.reduce(
+    films.reduce(
       (maxId, film) => (film.id > maxId ? film.id : maxId),
       0
     ) + 1;
@@ -125,12 +138,24 @@ router.post("/", (req, res) => {
     director,
     duration,
     //All the optional properties must be checked HERE before assigning them
+    //C: They could be checked before (see the 1st if statement)
     imageUrl: imageUrl?.trim() || undefined,
     description: description?.trim() || undefined,
     budget: budget && budget > 0 ? budget : undefined,
   };
 
-  defaultFilms.push(newFilm);
+  /*More simple way to add a film: 
+    const newFilm = body as NewFilm;
+
+  const nextId =
+    films.reduce((acc, film) => (film.id > acc ? film.id : acc), 0) + 1;
+
+  const addedFilm: Film = { id: nextId, ...newFilm };
+  */
+
+
+  films.push(newFilm);
+  
   return res.json(newFilm);
 });
 
