@@ -1,0 +1,30 @@
+
+### Read all films
+GET http://localhost:3000/films 
+
+### Read all films with File variable
+@baseUrl = http://localhost:3000
+GET {{baseUrl}}/films
+
+### Read all films with a minimum duration of 120 min
+GET {{baseUrl}}/films/?minimum-duration=120
+
+### Read a single film
+GET {{baseUrl}}/films/1
+
+### Create a film
+POST {{baseUrl}}/films
+Content-Type: application/json
+
+{
+    "title": "Lion King",
+    "director": "Roger Allers",
+    "duration": 88,
+    "imageUrl":
+      "https://upload.wikimedia.org/wikipedia/en/3/3d/The_Lion_King_poster.jpg",
+    "description":
+      "A lion cub named Simba, exiled after being blamed for his father's death, returns with the help of a meerkat and a warthog to reclaim his rightful place as king."}
+
+# !!! Don't forget to remove "," from the last property !!!
+
+# C: You forgot to add other test cases (Check create a film with a wrong budget, Read film which does not exist ...).
