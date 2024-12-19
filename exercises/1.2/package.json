@@ -1,7 +1,7 @@
 {
-  "name": "basic-api-boilerplate",
+  "name": "ex1.2",
   "version": "1.0.0",
-  "author": "e-Baron",
+  "author": "Mwana-Nteba Yohani",
   "private": true,
   "scripts": {
     "tsc": "tsc",
