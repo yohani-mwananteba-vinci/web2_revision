@@ -162,11 +162,18 @@ router.post("/", (req, res) => {
 // DELETE ONE : Effacer la ressource identifiée
 router.delete("/:id", (req, res) => {
   const id = Number(req.params.id);
+
+  //C: Missing a check for the id to be a number (!isNaN)
+
   const index = films.findIndex((film) => film.id === id);
+
   if (index === -1) {
     return res.sendStatus(404);
   }
+
   const deletedElements = films.splice(index, 1); // splice() returns an array of the deleted elements
+
+  // C: Could return the deleted element instead of the array
   return res.json(deletedElements[0]);
 });
 
@@ -174,8 +181,12 @@ router.delete("/:id", (req, res) => {
 //  pour une ou plusieurs propriétés
 router.patch("/:id", (req, res) => {
   const id = Number(req.params.id);
-  const film = films.find((film) => film.id === id);
-  if (!film) {
+
+  //C: Missing a check for the id to be a number (!isNaN)
+
+  const filmToUpdate = films.find((film) => film.id === id);
+
+  if (!filmToUpdate) {
     return res.sendStatus(404);
   }
 
@@ -200,6 +211,7 @@ router.patch("/:id", (req, res) => {
     return res.sendStatus(400);
   }
 
+  // C: There is an easier solution (See below)
   const {
     title,
     director,
@@ -210,30 +222,37 @@ router.patch("/:id", (req, res) => {
   }: Partial<NewFilm> = body;
 
   if (title) {
-    film.title = title;
+    filmToUpdate.title = title;
   }
 
   if (director) {
-    film.director = director;
+    filmToUpdate.director = director;
   }
 
   if (duration) {
-    film.duration = duration;
+    filmToUpdate.duration = duration;
   }
 
   if (budget) {
-    film.budget = budget;
+    filmToUpdate.budget = budget;
   }
 
   if (description) {
-    film.description = description;
+    filmToUpdate.description = description;
   }
 
   if (imageUrl) {
-    film.imageUrl = imageUrl;
+    filmToUpdate.imageUrl = imageUrl;
   }
 
-  return res.json(film);
+  //C: Easier solution
+  /*
+    const updatedFilm = { ...filmToUpdate, ...body };
+
+    films[films.indexOf(filmToUpdate)] = updatedFilm;
+  */
+
+  return res.json(filmToUpdate);
 });
 
 // UPDATE ONE or CREATE ONE : Remplacer la ressource par une ressource reprenant les valeurs données dans la requête,
@@ -371,5 +390,6 @@ router.put("/:id", (req, res) => {
   console.log("error");
   return res.sendStatus(400);
 });
+//C: Not the best way to handle this, but it works
 
 export default router;
