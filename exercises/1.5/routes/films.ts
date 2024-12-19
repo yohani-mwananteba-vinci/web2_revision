@@ -62,7 +62,6 @@ const films: Film[] = [
 ];
 
 // Read all films, filtered by minimum-duration if the query param exists
-// TODO
 router.get("/", (req, res) => {
   if (req.query["minimum-duration"] === undefined) {
     return res.send(films);
@@ -71,7 +70,7 @@ router.get("/", (req, res) => {
   const minDuration = Number(req.query["minimum-duration"]);
 
   if (isNaN(minDuration) || minDuration <= 0) {
-    res.sendStatus(400);  //Improved
+    res.sendStatus(400); //C: Il faut faire un return !
   }
 
   const filteredFilms = films.filter((film) => film.duration >= minDuration);
@@ -84,13 +83,13 @@ router.get("/:id", (req, res) => {
   const id = Number(req.params.id);
 
   if (isNaN(id)) {
-    return res.sendStatus(400); //Improves
+    return res.sendStatus(400); //Code OK
   }
 
   const film = films.find((film) => film.id === id);
 
   if (film === undefined) {
-    return res.sendStatus(404); //Improved
+    return res.sendStatus(404); //Code OK
   }
 
   return res.send(film);
@@ -119,7 +118,7 @@ router.post("/", (req, res) => {
     ("imageUrl" in body &&
       (typeof body.imageUrl !== "string" || !body.imageUrl.trim()))
   ) {
-    return res.sendStatus(400); // improved
+    return res.sendStatus(400); // Code OK
   }
 
   const expectedKeys = [
@@ -143,9 +142,30 @@ router.post("/", (req, res) => {
 
   const addedFilm: Film = { id: nextId, ...newFilm };
 
-  // addedFilm must have an unique title - director 
-  if (films.find((film) => film.title === addedFilm.title && film.director == addedFilm.director ))
+  // addedFilm must have an unique title - director
+  if (
+    films.find(
+      (film) =>
+        film.title === addedFilm.title && film.director == addedFilm.director
+    )
+  )
     return res.sendStatus(409);
+
+  // C: Code OK MAIS:
+  // - il faut prendre en compte la casse 
+  // - tester avec newFilm plutôt que addedfilm ( - de vérif à faire)
+  
+  /*Solution + efficace:
+    const existingFilm = films.find(
+    (film) =>
+      film.title.toLowerCase() === newFilm.title.toLowerCase() &&
+      film.director.toLowerCase() === newFilm.director.toLowerCase()
+    );
+
+    if (existingFilm) {
+      return res.sendStatus(409);
+    }
+  */
 
   films.push(addedFilm);
 
