@@ -1,0 +1,128 @@
+@baseUrl = http://localhost:3000
+
+### Read all texts
+GET {{baseUrl}}/texts
+
+### Read all texts with level easy
+GET {{baseUrl}}/texts/?level=eASY
+
+### Try to read texts with wrong level
+GET {{baseUrl}}/texts/?level=0
+
+### Read text with ID
+GET {{baseUrl}}/texts/befffcac-5d2a-423c-96c2-d04b907c9b78
+
+### Read text which does not exist
+GET {{baseUrl}}/texts/500
+
+### Create a text
+POST {{baseUrl}}/texts
+Content-Type: application/json
+
+{
+    "content": "This is an 2nd easy text.",
+    "level": "easy"
+}
+
+### Try to create a text with a parameter missing
+POST {{baseUrl}}/texts/
+Content-Type: application/json
+
+{
+    "content": "This is an 2nd medium text."
+}
+
+### Try to create a text with an empty string or string with whitespaces only
+POST {{baseUrl}}/texts/
+Content-Type: application/json
+
+{
+    "content": " ",
+    "level": "medium"
+}
+
+### Try to create a text with a wrong level (other than easy, medium, hard)
+POST {{baseUrl}}/texts/
+Content-Type: application/json
+
+{
+    "content": "This is an 2nd easy text.",
+    "level": 1
+}
+
+### Challenge of ex1.4 : Try to create a text with an unexpected parameter
+POST {{baseUrl}}/texts/
+Content-Type: application/json
+
+{
+    "content": "This is an 2nd medium text.",
+    "level": "medium",
+    "unexpected": "unexpected"
+}
+
+### Try to create a text which already exists (same text and level)
+POST {{baseUrl}}/texts/
+Content-Type: application/json
+
+{
+    "content": "This is an 2nd easy text.",
+    "level": "easy"
+}
+
+### Delete the text with an ID
+DELETE {{baseUrl}}/texts/e9d2ab65-1349-40a9-bc56-8220b28ea83b
+
+### Replace (or create) the whole text based on id
+PUT {{baseUrl}}/texts/e9d2ab65-1349-40a9-bc56-8220b28ea83b
+Content-Type: application/json
+
+{
+    "content": "This is an 2nd easy text.",
+    "level": "medium"
+}
+
+### Create new text with an ID
+PUT {{baseUrl}}/texts/e9d2ab65-1349-40a9-bc56-8220b28ea83b
+Content-Type: application/json
+
+{
+    "content": "This is an 2nd hard text.",
+    "level": "hard"
+}
+
+### Update text based on id when missing one expected parameter (level)
+PUT {{baseUrl}}/texts/46ad6412-163b-47d4-abab-b188b3d6a691
+Content-Type: application/json
+
+{
+    "content": "This is an 2nd medium text."
+}
+
+
+################# PATCH #################
+
+# ### Update text based on id
+# PATCH {{baseUrl}}/texts/e9d2ab65-1349-40a9-bc56-8220b28ea83b
+# Content-Type: application/json
+
+# {
+#     "content": "This is an 2nd medium text.",
+#     "level": "medium"
+# }
+
+# ### Try to update text based on id with empty param
+# PATCH {{baseUrl}}/texts/e9d2ab65-1349-40a9-bc56-8220b28ea83b
+# Content-Type: application/json
+
+# {
+#     "content":""
+# }
+
+# ### Challenge ex1.6 : Try to update text based on id with unexpected param (id)
+
+# PATCH {{baseUrl}}/texts/e9d2ab65-1349-40a9-bc56-8220b28ea83b
+# Content-Type: application/json
+
+# {
+#     "id": "lol"
+# }
