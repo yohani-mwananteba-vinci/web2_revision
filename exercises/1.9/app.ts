@@ -1,6 +1,5 @@
 import express from "express";
 
-import pizzaRouter from "./routes/films";
 import textRouter from "./routes/texts";
 import { requestCounterMiddleware } from "./utils/counter";
 
@@ -22,7 +21,6 @@ app.use((req, _res, next) => {
 /* Challenge of ex1.2 */
 app.use(requestCounterMiddleware);
 
-app.use("/films", pizzaRouter);
 app.use("/texts", textRouter);
 
 export default app;
