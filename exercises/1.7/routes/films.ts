@@ -1,12 +1,16 @@
 import { Router } from "express";
 
+import path from "node:path";
+
 import { Film, NewFilm } from "../types";
 
 import { containsOnlyExpectedKeys } from "../utils/validate";
+import { parse, serialize } from "../utils/json";
 
+const jsonDbPath = path.join(__dirname, "/../data/drinks.json");
 const router = Router();
 
-const films: Film[] = [
+const defaultFilms: Film[] = [
   {
     id: 1,
     title: "Shang-Chi and the Legend of the Ten Rings",
@@ -74,8 +78,9 @@ const expectedKeys = [
 
 // Read all films, filtered by minimum-duration if the query param exists
 router.get("/", (req, res) => {
+  const films = parse(jsonDbPath, defaultFilms);
   if (req.query["minimum-duration"] === undefined) {
-    return res.send(films);
+    return res.json(films);
   }
 
   const minDuration = Number(req.query["minimum-duration"]);
@@ -86,18 +91,20 @@ router.get("/", (req, res) => {
 
   const filteredFilms = films.filter((film) => film.duration >= minDuration);
 
-  return res.send(filteredFilms);
+  return res.json(filteredFilms);
 });
 
 // Read a film by id
 router.get("/:id", (req, res) => {
   const id = Number(req.params.id);
 
+  const films = parse(jsonDbPath, defaultFilms);
+
+  const film = films.find((film) => film.id === id);
+
   if (isNaN(id)) {
     return res.sendStatus(400);
   }
-
-  const film = films.find((film) => film.id === id);
 
   if (film === undefined) {
     return res.sendStatus(404);
@@ -140,6 +147,8 @@ router.post("/", (req, res) => {
 
   const newFilm = body as NewFilm;
 
+  const films = parse(jsonDbPath, defaultFilms);
+
   const existingFilm = films.find(
     (film) =>
       film.title.toLowerCase() === newFilm.title.toLowerCase() &&
@@ -150,13 +159,14 @@ router.post("/", (req, res) => {
     return res.sendStatus(409);
   }
 
+
   const nextId =
     films.reduce((acc, film) => (film.id > acc ? film.id : acc), 0) + 1;
 
   const addedFilm: Film = { id: nextId, ...newFilm };
 
   films.push(addedFilm);
-
+  serialize(jsonDbPath, films);
   return res.json(addedFilm);
 });
 
@@ -168,6 +178,7 @@ router.delete("/:id", (req, res) => {
     return res.sendStatus(400);
   }
 
+  const films = parse(jsonDbPath, defaultFilms);
   const index = films.findIndex((film) => film.id === id);
 
   if (index === -1) {
@@ -177,7 +188,7 @@ router.delete("/:id", (req, res) => {
   const deletedFilm = films[index];
 
   films.splice(index, 1);
-
+  serialize(jsonDbPath, films);
   return res.send(deletedFilm);
 });
 
@@ -189,6 +200,7 @@ router.patch("/:id", (req, res) => {
     return res.sendStatus(400);
   }
 
+  const films = parse(jsonDbPath, defaultFilms);
   const filmToUpdate = films.find((film) => film.id === id);
 
   if (filmToUpdate === undefined) {
@@ -226,6 +238,7 @@ router.patch("/:id", (req, res) => {
   const updatedFilm = { ...filmToUpdate, ...body };
 
   films[films.indexOf(filmToUpdate)] = updatedFilm;
+  serialize(jsonDbPath, films);
 
   return res.send(updatedFilm);
 });
@@ -267,6 +280,7 @@ router.put("/:id", (req, res) => {
     return res.sendStatus(400);
   }
 
+  const films = parse(jsonDbPath, defaultFilms);
   const indexOfFilmToUpdate = films.findIndex((film) => film.id === id);
   // Deal with the film creation if it does not exist
   if (indexOfFilmToUpdate < 0) {
@@ -290,7 +304,7 @@ router.put("/:id", (req, res) => {
     const addedFilm = { id: nextId, ...newFilm };
 
     films.push(addedFilm);
-
+    serialize(jsonDbPath, films);
     return res.json(addedFilm);
   }
 
@@ -298,7 +312,7 @@ router.put("/:id", (req, res) => {
   const updatedFilm = { ...films[indexOfFilmToUpdate], ...body } as Film;
 
   films[indexOfFilmToUpdate] = updatedFilm;
-
+  serialize(jsonDbPath, films);
   return res.send(updatedFilm);
 });
 

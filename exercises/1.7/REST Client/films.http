@@ -19,13 +19,16 @@ GET {{baseUrl}}/films/500
 POST {{baseUrl}}/films/
 Content-Type: application/json
 
-{
-    "title":"Star Wars: The Phantom Menace (Episode I)",
+  {
+    "title": "The Matrix",
+    "director": "Lana Wachowski, Lilly Wachowski",
     "duration": 136,
-    "director": "George Lucas",
-    "budget": 115,
-    "imageUrl":"https://upload.wikimedia.org/wikipedia/en/4/40/Star_Wars_Phantom_Menace_poster.jpg"
-}
+    "imageUrl":
+      "https://upload.wikimedia.org/wikipedia/en/c/c1/The_Matrix_Poster.jpg",
+    "description":
+      "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.",
+    "budget": 63
+  }
 
 ### Try to create a film with a parameter missing
 POST {{baseUrl}}/films/
