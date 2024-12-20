@@ -4,10 +4,10 @@
 GET {{baseUrl}}/texts
 
 ### Read all texts with level easy
-GET {{baseUrl}}/texts/?level=eASY
+GET {{baseUrl}}/texts/?level=easy
 
 ### Try to read texts with wrong level
-GET {{baseUrl}}/texts/?level=0
+GET {{baseUrl}}/texts/?level=hardcore
 
 ### Read text with ID
 GET {{baseUrl}}/texts/befffcac-5d2a-423c-96c2-d04b907c9b78
@@ -60,7 +60,7 @@ Content-Type: application/json
     "unexpected": "unexpected"
 }
 
-### Try to create a text which already exists (same text and level)
+### Try to create a text which already exists (same text and level)         #C: Only the content need to be checked
 POST {{baseUrl}}/texts/
 Content-Type: application/json
 
@@ -68,6 +68,7 @@ Content-Type: application/json
     "content": "This is an 2nd easy text.",
     "level": "easy"
 }
+
 
 ### Delete the text with an ID
 DELETE {{baseUrl}}/texts/e9d2ab65-1349-40a9-bc56-8220b28ea83b
@@ -81,7 +82,7 @@ Content-Type: application/json
     "level": "medium"
 }
 
-### Create new text with an ID
+### Create new text with an ID                                              #C: We use updateOne instead  (PUT = ONLY update) => useless test
 PUT {{baseUrl}}/texts/e9d2ab65-1349-40a9-bc56-8220b28ea83b
 Content-Type: application/json
 
@@ -90,39 +91,10 @@ Content-Type: application/json
     "level": "hard"
 }
 
-### Update text based on id when missing one expected parameter (level)
+### Update text based on id when missing one expected parameter (level)     #C: Should return 400
 PUT {{baseUrl}}/texts/46ad6412-163b-47d4-abab-b188b3d6a691
 Content-Type: application/json
 
 {
     "content": "This is an 2nd medium text."
 }
-
-
-################# PATCH #################
-
-# ### Update text based on id
-# PATCH {{baseUrl}}/texts/e9d2ab65-1349-40a9-bc56-8220b28ea83b
-# Content-Type: application/json
-
-# {
-#     "content": "This is an 2nd medium text.",
-#     "level": "medium"
-# }
-
-# ### Try to update text based on id with empty param
-# PATCH {{baseUrl}}/texts/e9d2ab65-1349-40a9-bc56-8220b28ea83b
-# Content-Type: application/json
-
-# {
-#     "content":""
-# }
-
-# ### Challenge ex1.6 : Try to update text based on id with unexpected param (id)
-
-# PATCH {{baseUrl}}/texts/e9d2ab65-1349-40a9-bc56-8220b28ea83b
-# Content-Type: application/json
-
-# {
-#     "id": "lol"
-# }

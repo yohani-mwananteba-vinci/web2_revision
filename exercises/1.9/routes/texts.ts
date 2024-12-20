@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { Level, NewText } from "../types";
+import { Level, NewText } from "../types";  //C: Level is useless here
 
 import { containsOnlyExpectedKeys } from "../utils/validate";
 
@@ -10,12 +10,15 @@ import {
   readAll,
   readOne,
   // updateOne,
-    updateOrCreateOne,
+    updateOrCreateOne,          //C: updateOne should be used instead  
 } from "../services/texts";
 
 const router = Router();
 
 const expectedKeys = ["content", "level"];
+
+// C: Should also check that the level is valid with a const array
+// const expectedLevels = ["easy", "medium", "hard"];
 
 // Read all texts, filtered by level if the query param exists
 router.get("/", (req, res) => {
@@ -34,6 +37,20 @@ router.get("/", (req, res) => {
   return res.send(filteredText);
 });
 
+//C: Ok but could be better
+/*
+    const level =
+    "level" in req.query && typeof req.query["level"] === "string"
+      ? req.query["level"]
+      : undefined;
+
+  if (level !== undefined && !expectedLevels.includes(level)) {
+    return res.sendStatus(400);
+
+    ...
+  }
+*/
+
 // Read a text by id
 router.get("/:id", (req, res) => {
   const id = String(req.params.id).trim();
@@ -41,6 +58,14 @@ router.get("/:id", (req, res) => {
   if (!id || id === "") {
     return res.sendStatus(400);
   }
+
+  // C: More simple solution
+  /*  
+    const id = req.params.id;
+    if (typeof req.params.id !== "string") {
+      return res.sendStatus(400);
+    } 
+  */
 
   const text = readOne(id);
 
@@ -66,7 +91,7 @@ router.post("/", (req, res) => {
     !body.level.trim() ||
     (body.level.toLowerCase() !== "easy" &&
       body.level.toLowerCase() !== "medium" &&
-      body.level.toLowerCase() !== "hard")
+      body.level.toLowerCase() !== "hard")    // C: Easiest way to check the level => !expectedLevels.includes(body.level)
   ) {
     return res.sendStatus(400);
   }
@@ -96,6 +121,14 @@ router.delete("/:id", (req, res) => {
   if (!id || id === "") {
     return res.sendStatus(400);
   }
+
+  // C: More simple solution
+  /*  
+    const id = req.params.id;
+    if (typeof req.params.id !== "string") {
+      return res.sendStatus(400);
+    } 
+  */
 
   const deletedText = deleteOne(id);
 
@@ -160,7 +193,7 @@ router.put("/:id", (req, res) => {
         !body.level.trim() ||
         (body.level.toLowerCase() !== "easy" &&
           body.level.toLowerCase() !== "medium" &&
-          body.level.toLowerCase() !== "hard")))
+          body.level.toLowerCase() !== "hard")))  // C: Easiest way to check the level => !expectedLevels.includes(body.level)
   ) {
     return res.sendStatus(400);
   }
@@ -176,10 +209,19 @@ router.put("/:id", (req, res) => {
     return res.sendStatus(400);
   }
 
+    // C: More simple solution
+  /*  
+    const id = req.params.id;
+    if (typeof req.params.id !== "string") {
+      return res.sendStatus(400);
+    } 
+  */
+
+  //C: OK but should be updatedOne
   const createdOrUpdatedText = updateOrCreateOne(id, body as NewText);
 
   if (!createdOrUpdatedText) {
-    return res.sendStatus(409); // Text already exists
+    return res.sendStatus(409);   //C: Ok but should return 404 (because we are trying to update a non existant text)
   }
 
   return res.send(createdOrUpdatedText);

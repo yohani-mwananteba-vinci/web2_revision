@@ -1,6 +1,6 @@
 import path from "node:path";
 
-import { Text, NewText, Level} from "../types";
+import { Text, NewText, Level} from "../types";   //C: Level is useless here
 
 import { serialize, parse } from "../utils/json";
 
@@ -10,28 +10,31 @@ const jsonDbPath = path.join(__dirname, "/../data/texts.json");
 
 const defaultTexts: Text[] = [
   {
-    id: uuidv4().toString(),
+    id: uuidv4().toString(),            //C: Could be just a string
     content: "This is an easy text.",
-    level: Level.Easy,
+    level: Level.Easy,                  //C: Could be just "easy"
   },
   {
-    id: uuidv4().toString(),
+    id: uuidv4().toString(),            //C: Could be just a string
     content: "This is a medium text.",
-    level: Level.Medium,
+    level: Level.Medium,                //C: Could be just "medium"
   },
   {
-    id: uuidv4().toString(),
+    id: uuidv4().toString(),            //C: Could be just a string
     content: "This is a hard text.",
-    level: Level.Hard,
+    level: Level.Hard,                  //C: Could be just "hard"
   },
 ];
 
 const readAll = (level: string): Text[] | undefined => {
   const texts = parse(jsonDbPath, defaultTexts);
+
+  //C: this solution is already implemented in the return
   if (!level) {
     return texts;
   }
 
+  //C: No need to check the level here, it's must be checked in /routes/texts.ts (code 400)
   if (!checkLevel(level)) {
     return undefined;
   }
@@ -50,7 +53,7 @@ const createOne = (newText: NewText): Text | undefined => {
   const existingText = texts.find(
     (text) =>
     text.content.toLowerCase() === newText.content.toLowerCase() &&
-    text.level.toLowerCase() === newText.level.toLowerCase()
+    text.level.toLowerCase() === newText.level.toLowerCase()    //C: level must be check in /routes/texts.ts (code 400)
 );
 console.log(existingText);
 
@@ -58,6 +61,7 @@ console.log(existingText);
     return undefined;
   }
 
+  //C: level must be check in /routes/texts.ts (code 400)
   if (!checkLevel(newText.level)) {
     return undefined;
   }
@@ -86,16 +90,14 @@ const deleteOne = (id: string): Text | undefined => {
 };
 
 
-const updateOrCreateOne = (
-  id: string,
-  updatedText: NewText
-): Text | undefined => {
+//Should be just updatedOne
+const updateOrCreateOne = (id: string, updatedText: NewText): Text | undefined => {
   const texts = parse(jsonDbPath, defaultTexts);
 
   const index = texts.findIndex((text) => text.id === id);
 
   if (index === -1) {
-    return createOne(updatedText);
+    return createOne(updatedText);    //C: Should return undefined
   }
 
   const text = { ...texts[index], ...updatedText };
@@ -106,6 +108,7 @@ const updateOrCreateOne = (
   return text;
 };
 
+//C: This function is not supposed to be used here (code 400 = routes/texts.ts)
 const checkLevel = (level: string): boolean => {
   return level.toLowerCase() === "easy" || level.toLowerCase() === "medium" || level.toLowerCase() === "hard";
 };
