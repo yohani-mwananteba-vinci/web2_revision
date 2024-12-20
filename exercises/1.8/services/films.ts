@@ -2,8 +2,6 @@ import path from "node:path";
 
 import { Film, NewFilm } from "../types";
 
-// import { containsOnlyExpectedKeys } from "../utils/validate";
-
 import { serialize, parse } from "../utils/json";
 
 const jsonDbPath = path.join(__dirname, "/../data/films.json");
@@ -65,15 +63,7 @@ const defaultFilms: Film[] = [
   },
 ];
 
-// const expectedKeys = [
-//   "title",
-//   "director",
-//   "duration",
-//   "budget",
-//   "description",
-//   "imageUrl",
-// ];
-
+//C : OK but more easy way to write it
 // Read all films, filtered by minimum-duration if the query param exists
 function readAllFilms(minDuration: number): Film[] {
   const films = parse(jsonDbPath, defaultFilms);
@@ -91,11 +81,21 @@ function readAllFilms(minDuration: number): Film[] {
   return filteredFilms;
 }
 
+//C : OK but more easy way to write it:
+/*
+  const readAll = (minimumDuration: number | undefined = undefined): Film[] => {
+    const films = parse(jsonDbPath, defaultFilms);
+    return minimumDuration
+      ? films.filter((film) => film.duration >= minimumDuration)
+      : films;
+  };
+*/
+
 // Read a film by id
 function readOneFilm(id: number): Film | undefined {
   const films = parse(jsonDbPath, defaultFilms);
 
-  const film = films.find((film) => film.id === id);
+  const film = films.find((film) => film.id === id);  //C : OK but you could just return this line
 
   if (film === undefined) {
     return undefined;
@@ -118,6 +118,7 @@ function createOneFilm(newFilm: NewFilm): Film | undefined {
     return undefined;
   }
 
+  //C: a function to get the next id whould be better (nextId = getNextId(films))
   const nextId =
     films.reduce((acc, film) => (film.id > acc ? film.id : acc), 0) + 1;
 
@@ -133,7 +134,9 @@ function createOneFilm(newFilm: NewFilm): Film | undefined {
 // Delete a film by id
 function deleteOneFilm(filmId: number): Film | undefined {
   const films = parse(jsonDbPath, defaultFilms);
+
   const index = films.findIndex((film) => film.id === filmId);
+
   if (index === -1) {
     return undefined;
   }
@@ -141,6 +144,13 @@ function deleteOneFilm(filmId: number): Film | undefined {
   const deletedElements = films.splice(index, 1);
   serialize(jsonDbPath, films);
   return deletedElements[0];
+
+  //C: alternative way to write it:
+  /*
+    const [film] = films.splice(index, 1);
+    serialize(jsonDbPath, films);
+    return film;
+  */
 }
 
 // Update on or multiple props of a film
@@ -177,6 +187,7 @@ function updateOneFilm(
   if (newFilm.imageUrl) {
     film.imageUrl = newFilm.imageUrl!;
   }
+  //C: Ok but you could just write:   const film = { ...films[index], ...updatedFilm };
 
   serialize(jsonDbPath, films);
   return film;
@@ -197,6 +208,31 @@ function putOneFilm(
 
   return createOneFilm(newFilm as NewFilm);
 }
+//C: Ok but you could be better write it like this:
+/*
+  const updateOrCreateOne = (
+    id: number,
+    updatedFilm: NewFilm
+  ): Film | undefined => {
+    const films = parse(jsonDbPath, defaultFilms);
+
+    const index = films.findIndex((film) => film.id === id);
+
+    if (index === -1) {
+      return createOne(updatedFilm);
+    }
+
+    const film = { ...films[index], ...updatedFilm };
+
+    films[index] = film;
+    serialize(jsonDbPath, films);
+
+    return film;
+};
+
+*/
+
+// C: Missing a function to get the next id
 
 export {
   readAllFilms,

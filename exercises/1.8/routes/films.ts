@@ -4,7 +4,7 @@ import { NewFilm } from "../types";
 
 import { containsOnlyExpectedKeys } from "../utils/validate";
 
-import{ readAllFilms, readOneFilm, createOneFilm, deleteOneFilm, updateOneFilm } from "../services/films";
+import{ readAllFilms, readOneFilm, createOneFilm, deleteOneFilm, updateOneFilm } from "../services/films";  //C: Should have a function updateOrCreateOneFilm (Put)
 
 const router = Router();
 
@@ -22,6 +22,8 @@ const expectedKeys = [
 // Read all films, filtered by minimum-duration if the query param exists
 router.get("/", (req, res) => {
   const minDuration = Number(req.query["minimum-duration"]);
+  // C: Should check if a minimum-duration was in and add ? in the query string () and return a undefined if the query string is not present
+  // const minDuration = "minimum-duration" in req.query? Number(req.query["minimum-duration"]): undefined;
 
   if (minDuration && (isNaN(minDuration) || minDuration <= 1)) {
     return res.sendStatus(400);
@@ -112,6 +114,7 @@ router.delete("/:id", (req, res) => {
 // Update on or multiple props of a film
 router.patch("/:id", (req, res) => {
   const id = Number(req.params.id);
+
   if (isNaN(id)) {
     return res.sendStatus(400);
   }
@@ -145,6 +148,9 @@ router.patch("/:id", (req, res) => {
 
   const { title, director, duration, budget, description, imageUrl } : Partial<NewFilm> = body;
   const updatedFilm = updateOneFilm(id, { title, director, duration, budget, description, imageUrl });
+
+  //C: Easiest way => const updatedFilm = updateOne(id, body);
+
   if (!updatedFilm) {
     return res.sendStatus(404);
   }
@@ -189,6 +195,9 @@ router.put("/:id", (req, res) => {
     return res.sendStatus(400);
   }
 
+  //C: Ok but there should be a function updateOrCreateOneFilm
+  
+  // Create the film if it does not exist
   const newFilm = body as NewFilm;
   if(!readOneFilm(id)){
     const addedFilm = createOneFilm(newFilm);
@@ -198,11 +207,6 @@ router.put("/:id", (req, res) => {
   }
 
   // Update the film
-
-  //const updatedFilm = { ...films[indexOfFilmToUpdate], ...body } as Film;
-
-  //films[indexOfFilmToUpdate] = updatedFilm;
-
   const updatedFilm = updateOneFilm(id, newFilm as Partial<NewFilm>);
   if (!updatedFilm) {
     return res.sendStatus(404);
