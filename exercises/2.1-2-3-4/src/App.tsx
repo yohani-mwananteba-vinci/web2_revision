@@ -23,6 +23,7 @@ const App = () => {
   return (
     <div>
       <PageTitle title={pageTitle} />
+
       <Cinema 
         name={cinema1Name}
         movie1Title={cinema1Movie1Title}
@@ -46,12 +47,15 @@ const App = () => {
 interface PageTitleProps {
   title : string;
 }
+// C: interface unessary, but OK
 
 const PageTitle = (props: PageTitleProps) => {
   return (
       <h1>{props.title}</h1>
   );
 }
+// C: OK but props should be destructured => (props: {name: string, movie1Title: string, movie1Director: string, movie2Title: string, movie2Director: string})
+
 
 // display all the information associated with the first & second cinema
 interface CinemaProps {
@@ -61,7 +65,7 @@ interface CinemaProps {
   movie2Title: string
   movie2Director: string;
 }
-
+// C: interface unessary, but OK
 
 const Cinema = (props: CinemaProps) => {
   return (
@@ -81,5 +85,7 @@ const Cinema = (props: CinemaProps) => {
       </div>
   );
 }
+// C: OK but props could be destructured => (props: {name: string, movie1Title: string, movie1Director: string, movie2Title: string, movie2Director: string})
+
 
 export default App;
