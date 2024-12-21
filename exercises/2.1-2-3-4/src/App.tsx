@@ -1,3 +1,20 @@
+// C: Always put all the interface above the function
+
+interface PageTitleProps {
+  title : string;
+}
+
+interface CinemaProps {
+  name: string;
+  movie: Movie;
+  movie2: Movie;
+}
+
+interface Movie{
+  title: string;
+  director: string;
+}
+
 const App = () => {
   const pageTitle = "Informations sur les films dans les cinémas";
 
@@ -34,30 +51,15 @@ const App = () => {
 };
 
 
-// display page title
-interface PageTitleProps {
-  title : string;
-}
 
+// display page title
 const PageTitle = (props: PageTitleProps) => {
   return (
       <h1>{props.title}</h1>
   );
 }
 
-
 // display all the information associated with the first & second cinema
-interface CinemaProps {
-  name: string;
-  movie: Movie;
-  movie2: Movie;
-}
-
-interface Movie{
-  title: string;
-  director: string;
-}
-
 const Cinema = (props: CinemaProps) => {
   return (
       <div>
