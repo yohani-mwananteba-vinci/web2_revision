@@ -1,71 +1,62 @@
-// Please refactor this code so that two new components can :
-//     display the page title
-//     display all the information associated with the first cinema
-//     display all the information associated with the second cinema
-
 const App = () => {
-  // ... for const definitions
   const pageTitle = "Informations sur les films dans les cinémas";
 
   const cinema1Name = "UGC DeBrouckère";
-  const cinema1Movie1Title = "Film 1 - DeBrouckère";
-  const cinema1Movie1Director = "Director A";
-  const cinema1Movie2Title = "Film 2 - DeBrouckère";
-  const cinema1Movie2Director = "Director B";
+
+  const movie1 = {
+    title: "HAIKYU-THE DUMPSTER BATTLE",
+    director: "Susumu Mitsunaka",
+  };
+  const movie2 = {
+    title: "GOODBYE JULIA ",
+    director: "Mohamed Kordofani",
+  };
 
   const cinema2Name = "UGC Toison d'Or";
-  const cinema2Movie1Title = "Film 1 - Toison d'Or";
-  const cinema2Movie1Director = "Director C";
-  const cinema2Movie2Title = "Film 2 - Toison d'Or";
-  const cinema2Movie2Director = "Director D";
-
+  const movie3 = {
+    title: "THE WATCHERS",
+    director: "Ishana Night Shyamalan",
+  };
+  const movie4 = {
+    title: "BAD BOYS: RIDE OR DIE",
+    director: "Adil El Arbi, Bilall Fallah",
+  };
 
   return (
     <div>
       <PageTitle title={pageTitle} />
 
-      <Cinema 
-        name={cinema1Name}
-        movie1Title={cinema1Movie1Title}
-        movie1Director={cinema1Movie1Director}
-        movie2Title={cinema1Movie2Title}
-        movie2Director={cinema1Movie2Director}
-      />
+      <Cinema name={cinema1Name} movie={movie1} movie2={movie2} />
 
-      <Cinema 
-        name={cinema2Name}
-        movie1Title={cinema2Movie1Title}
-        movie1Director={cinema2Movie1Director}
-        movie2Title={cinema2Movie2Title}
-        movie2Director={cinema2Movie2Director}
-      />
+      <Cinema name={cinema2Name} movie={movie3} movie2={movie4} />
     </div>
   );
 };
+
 
 // display page title
 interface PageTitleProps {
   title : string;
 }
-// C: interface unessary, but OK
 
 const PageTitle = (props: PageTitleProps) => {
   return (
       <h1>{props.title}</h1>
   );
 }
-// C: OK but props should be destructured => (props: {name: string, movie1Title: string, movie1Director: string, movie2Title: string, movie2Director: string})
 
 
 // display all the information associated with the first & second cinema
 interface CinemaProps {
   name: string;
-  movie1Title: string
-  movie1Director: string;
-  movie2Title: string
-  movie2Director: string;
+  movie: Movie;
+  movie2: Movie;
 }
-// C: interface unessary, but OK
+
+interface Movie{
+  title: string;
+  director: string;
+}
 
 const Cinema = (props: CinemaProps) => {
   return (
@@ -73,19 +64,18 @@ const Cinema = (props: CinemaProps) => {
         <h2>{props.name}</h2>
         <ul>
           <li>
-            <strong>{props.movie1Title}</strong> - Réalisateur :{" "}
-            {props.movie1Director}
+            <strong>{props.movie.title}</strong> - Réalisateur :{" "}
+            {props.movie.director}
           </li>
 
           <li>
-            <strong>{props.movie2Title}</strong> - Réalisateur :{" "}
-            {props.movie2Director}
+            <strong>{props.movie2.title}</strong> - Réalisateur :{" "}
+            {props.movie2.director}
           </li>
         </ul>
       </div>
   );
 }
-// C: OK but props could be destructured => (props: {name: string, movie1Title: string, movie1Director: string, movie2Title: string, movie2Director: string})
 
 
 export default App;
