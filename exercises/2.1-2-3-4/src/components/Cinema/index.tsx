@@ -13,6 +13,7 @@ interface CinemaProps {
 
 // display all the information associated with the first & second cinema
 const Cinema = (props: CinemaProps) => {
+  //C: return is not necessary
   return (
     <div>
       <h2>{props.name}</h2>
