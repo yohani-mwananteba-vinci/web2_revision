@@ -13,6 +13,7 @@ const App = () => {
   ];
   const footerText = "© 2023 My App";
 
+  //C: should map the tab here
   return (
     <div>
       <TitlePage title={title} />

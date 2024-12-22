@@ -1,8 +1,9 @@
 import User from "../../types";
 
 interface MainProps {
-  users: User[];
+  users: User[];  // C: No need to have a User[] here
 }
+
 
 const Main = (props: MainProps) => {
   return (
@@ -16,5 +17,6 @@ const Main = (props: MainProps) => {
     </div>
   );
 };
+//C:  should map the tab in App.tsx, not here (But it's a OK solution)
 
 export default Main;

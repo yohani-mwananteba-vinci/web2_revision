@@ -3,7 +3,7 @@ interface FooterProps {
 }
 
 const Footer = (props: FooterProps) => {
-  return <footer>{props.footerText}</footer>;
+  return <footer>{props.footerText}</footer>;       //C: no need a return statement
 };
 
 export default Footer;

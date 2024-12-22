@@ -1,5 +1,5 @@
 interface User {
-    id: number
+    id: number  //C: Useless property
     name: string;
     age: number;
 }
