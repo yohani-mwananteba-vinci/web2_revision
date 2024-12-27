@@ -1,14 +1,23 @@
-import { useState } from 'react'
-import './App.css'
+import { useState } from "react";
+import "./ClickCounter.css";
 
-const ClickCounter = () => {
-    const [count, setCount] = useState(0)
+interface ClickCounterProps {
+  title: string;
+  message: string;
+}
 
-    return (
-    <button onClick={() => setCount((count) => count + 1)}>
+const ClickCounter = ({ title, message }: ClickCounterProps) => {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <h2>{title}</h2>
+      <button onClick={() => setCount((count) => count + 1)}>
         count is {count}
-    </button>
-    );
+      </button>
+      <p>{count < 10 ? `` : `${message}`}</p>
+    </div>
+  );
 };
 
 export default ClickCounter;
