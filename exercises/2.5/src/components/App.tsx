@@ -3,6 +3,8 @@ import reactLogo from "../assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 
+
+// C: You should have export the entire div "card" in ClickCounter.tsx (and adapt the css)
 function App() {
   return (
     <>
