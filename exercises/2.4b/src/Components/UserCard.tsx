@@ -1,10 +1,11 @@
 import "./UserCard.css";
 
+//C: Should have only 1 props: user: User (which should be define in ../types.ts and imported)
 interface UserCardProps {
   name: string;
   age: number;
   isOnline: boolean;
-  children: React.ReactNode;
+  children: React.ReactNode;    //C: No need to have a children prop
 }
 
 const UserCard = (props: UserCardProps) => {
@@ -16,7 +17,7 @@ const UserCard = (props: UserCardProps) => {
         {" "}
         {props.isOnline ? "En ligne" : "Hors ligne"}{" "}
       </div>
-      <div>{props.children}</div>
+      <div>{props.children}</div> 
     </div>
   );
 };
