@@ -46,6 +46,6 @@ const BackgroundBox = ({ colors }: BackgroundBoxProps) => {
 //       </button>
 //       <h3>{colors[currentColorIndex]}</h3>
 //     </div>
-  );
+//   );
 
 export default BackgroundBox;
