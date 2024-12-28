@@ -1,10 +1,12 @@
 import { useState } from "react";
 import Color from "../types";
 
+// C: Interface is not needed, could just be a string array
 interface BackgroundBoxProps {
   colors: Color[];
 }
 
+// C: Ok but could be simplified (see below)
 const BackgroundBox = ({ colors }: BackgroundBoxProps) => {
   // Help: We use a number state to keep track of the current color index
   const [currentColorIndex, setCurrentColorIndex] = useState(0);
@@ -23,5 +25,27 @@ const BackgroundBox = ({ colors }: BackgroundBoxProps) => {
     </div>
   );
 };
+
+// C: Could be simplified to:
+// const colors = ["red", "green", "blue", "yellow", "purple"];
+
+// const ColorBox = () => {
+//   const [currentColorIndex, setCurrentColorIndex] = useState(0);
+
+//   return (
+//     <div
+//       className="color-box"
+//       style={{ backgroundColor: colors[currentColorIndex] }}
+//     >
+//       <button className="color-box__button"
+//         onClick={() => {
+//           setCurrentColorIndex((currentColorIndex + 1) % colors.length);
+//         }}
+//       >
+//         {colors[(currentColorIndex + 1) % colors.length]}
+//       </button>
+//       <h3>{colors[currentColorIndex]}</h3>
+//     </div>
+  );
 
 export default BackgroundBox;
