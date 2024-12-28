@@ -1,11 +1,10 @@
-import {  SyntheticEvent, useState } from "react";
+import { SyntheticEvent, useState } from "react";
 import sound from "../../assets/sounds/Infecticide-11-Pizza-Spinoza.mp3";
 import DrinkCard from "./DrinkCard";
 import DrinkMenu from "./DrinkMenu";
 import "./Main.css";
 import PizzaMenu from "./PizzaMenu";
 import { Pizza } from "../../types";
-
 
 const defaultPizzas = [
   {
@@ -33,7 +32,7 @@ const defaultPizzas = [
     title: "Diable",
     content: "Tomates, Mozarella, Chorizo piquant, Jalapenos",
   },
-] ;
+];
 
 const Main = () => {
   const [pizza, setPizza] = useState("");
@@ -48,7 +47,7 @@ const Main = () => {
       title: pizza,
       content: description,
     };
-    
+
     setPizzas([...pizzas, newPizza]);
   };
 
@@ -71,7 +70,7 @@ const Main = () => {
         Because we love JS, you can also click on the header to stop / start the
         music ; )
       </p>
-      <audio id="audioPlayer" controls >
+      <audio id="audioPlayer" controls>
         <source src={sound} type="audio/mpeg" />
         Your browser does not support the audio element.
       </audio>
