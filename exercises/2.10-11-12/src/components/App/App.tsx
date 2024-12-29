@@ -7,10 +7,10 @@ import PageTitle from "../Main/PageTitle";
 import AddMovieForm from "../Main/MovieListPage/AddMovieForm";
 import MovieListView from "../Main/MovieListPage/MovieListView";
 import Cinema from "../Main/CinemaPage/Cinema";
-import { Movie as MovieCinema } from "../Main/CinemaPage/MovieItem";
+import { Movie as MovieCinema } from "../Main/CinemaPage/MovieItem";  //C: No need to have an new other reference for Movie type
 import { Movie } from "../../types";
 
-
+//C : !!! You should have a import for EVERY component (except Header and footer) you use in this file ( NavBar, HomePage, MovieListPage, CinemaPage) !!!
 const NavBar = () => {
   const navigate = useNavigate();
 
@@ -23,6 +23,8 @@ const NavBar = () => {
   );
 };
 
+//C : - !!! You should have a import for HomePage (a new file ../HomePage/HomePage.tsx) !!!
+//    - Should use <div> instead of <main> in HomePage component (should be in App)
 const HomePage = () => {
   return (
     <main className="page-content">
@@ -32,6 +34,8 @@ const HomePage = () => {
   );
 };
 
+//C : - !!! You should have a import for MovieListPage (a new file ../MovieListPage/MovieListPage.tsx) !!!
+//    - Should use <div> instead of <main> in MovieListPage component (should be in App)
 const MovieListPage = () => {
   const defaultMovies: Movie[] = [
     {
@@ -108,6 +112,9 @@ const MovieListPage = () => {
   );
 };
 
+//C : - !!! You should have a import for CinemaPage (a new file ../CinemaPage/CinemaPage.tsx) !!!
+//    - Should use <div> instead of <main> in CinemaPage component (should be in App)
+//    - You should add a duration property to the entries in the movies arrays (should stay a Movie[])
 const CinemaPage = () => {
   const pageTitle = "Informations sur les films dans les cinémas";
 
@@ -182,6 +189,7 @@ const CinemaPage = () => {
   );
 };
 
+//C : You keep <main> in App component
 const App = () => {
   return (
     <div>
