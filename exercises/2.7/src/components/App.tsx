@@ -60,6 +60,7 @@ const favouriteFilms = [
   },
 ];
 
+// C: Ok but you should have a component for the form (AddFilmForm) and a component for the list of films (FilmList)
 function App() {
   const [title, setTitle] = useState("");
 
@@ -75,6 +76,7 @@ function App() {
 
   const [films, setFilms] = useState(favouriteFilms);
 
+  //C: Ok but you could handleSubmit to handle all the inputs in one function
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
 
@@ -104,6 +106,11 @@ function App() {
 
     console.log(films);
   };
+
+  //C: No need to have a function for each input, you can use OnChange on the input directly
+  // Example:           
+  //  <input onChange={(e) => setTitle(e.target.value)} />                  => Change the title
+  //  <input onChange={(e) => setDuration(parseInt(e.target.value))} />     => Change the duration
 
   const handleTitleChange = (e: SyntheticEvent) => {
     const titleInput = e.target as HTMLInputElement;

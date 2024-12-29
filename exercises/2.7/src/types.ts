@@ -1,5 +1,5 @@
 interface Film {
-  id: number;
+  id: number;   // C: the id was not necessary
   title: string;
   director: string;
   duration: number;
