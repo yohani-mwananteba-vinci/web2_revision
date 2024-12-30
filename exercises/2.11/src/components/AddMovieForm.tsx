@@ -1,6 +1,7 @@
 import { SyntheticEvent, useState } from "react";
 import { Movie } from "../types";
 import "./AddMovieForm.css";
+import { useNavigate } from "react-router-dom";
 
 interface AddMovieFormProps {
   onMovieAdded: (movie: Movie) => void;
@@ -14,6 +15,9 @@ const AddMovieForm = ({ onMovieAdded }: AddMovieFormProps) => {
   const [description, setDescription] = useState("");
   const [budget, setBudget] = useState(0);
 
+  // Navigate is is a function that allows you to navigate to a different route.
+  const navigate = useNavigate();
+
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
     onMovieAdded({ title, director, duration, imageUrl, description, budget });
@@ -23,6 +27,7 @@ const AddMovieForm = ({ onMovieAdded }: AddMovieFormProps) => {
     setImageUrl("");
     setDescription("");
     setBudget(0);
+    navigate("/movie-list");  // We navigate to the movie-list page after adding a movie.
   };
   return (
     <form onSubmit={handleSubmit}>
