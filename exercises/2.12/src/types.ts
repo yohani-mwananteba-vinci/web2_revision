@@ -13,4 +13,6 @@ interface MovieContext {
   onMovieAdded: (newMovie: Movie) => void;
 }
 
+// C: Missing a NewMovie type (omit id)
+
 export type { Movie, MovieContext };

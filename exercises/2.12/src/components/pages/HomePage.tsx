@@ -3,6 +3,7 @@ import PageTitle from "../PageTitle";
 import { Movie } from "../../types";
 import MovieCard from "../MovieCard";
 
+// C: You should use "const { movies }: MovieContext = useOutletContext();" to get the movies from the context.
 const favouriteMovies : Movie[] = [
   {
     id: 1,
@@ -39,12 +40,13 @@ const favouriteMovies : Movie[] = [
   },
 ];
 
+//C : You should create a component called moviePage that will display the details of a movie. This component should be displayed when the user navigates to the /movies/:movieId route. The movieId parameter should be used to find the movie to display.
 const MoviePage = () => {
   const match = useMatch("/movies/:movieId");
   const movieId = match?.params.movieId;
   if (!movieId) return <p>Movie not found</p>;
 
-  const movie = favouriteMovies.find((movie) => movie.id.toString() === movieId);
+  const movie = favouriteMovies.find((movie) => movie.id.toString() === movieId);   //C: You should use movies in a context to retrieve the movie with the given id. (see above)
   if (!movie) return <p>Movie not found</p>;
 
   return (
@@ -54,6 +56,7 @@ const MoviePage = () => {
   );
 };
 
+//C: You should create a component "MovieTitleList" that will display the list of favorite movies.
 const HomePage = () => {
   return (
     <div>
